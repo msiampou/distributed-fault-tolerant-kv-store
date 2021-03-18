@@ -1,0 +1,11 @@
+name string
+surname string
+age int
+address string
+street string
+postalcode string
+number int
+phone string
+level int
+height float
+profession string
