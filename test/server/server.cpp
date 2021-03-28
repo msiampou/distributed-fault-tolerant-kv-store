@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../library/server/server.hpp"
+#include "../../library/network/server/server.hpp"
 
 int main (void) {
   std::int32_t p;

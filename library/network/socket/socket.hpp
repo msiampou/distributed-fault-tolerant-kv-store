@@ -1,5 +1,5 @@
-#ifndef _LIBRARY_IO_SOCKET_SOCKET_HPP_
-#define _LIBRARY_IO_SOCKET_SOCKET_HPP_
+#ifndef _LIBRARY_NETWORK_SOCKET_SOCKET_HPP_
+#define _LIBRARY_NETWORK_SOCKET_SOCKET_HPP_
 
 #include <iostream>
 #include <string>
@@ -9,8 +9,6 @@
 #include <netdb.h>
 #include <cassert>
 #include <vector>
-#include <sstream>
-#include <fstream>
 #include <unistd.h> 
 #include <cstring>
 
@@ -104,4 +102,4 @@ class socket {
 
 } // namespace io
 
-#endif
+#endif // _LIBRARY_NETWORK_SOCKET_SOCKET_HPP_

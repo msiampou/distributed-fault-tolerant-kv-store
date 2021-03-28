@@ -1,9 +1,9 @@
-#ifndef _LIBRARY_BROKER_SERVER_HPP_
-#define _LIBRARY_BROKER_SERVER_HPP_
+#ifndef _LIBRARY_NETWORK_SERVER_SERVER_HPP_
+#define _LIBRARY_NETWORK_SERVER_SERVER_HPP_
 
 #include <string>
 
-#include "../io/socket/socket.hpp"
+#include "../socket/socket.hpp"
 
 class server {
   public:
@@ -31,6 +31,7 @@ class server {
   
   private:
     io::socket socket;
-};
 
-#endif
+}; // class server
+
+#endif // _LIBRARY_NETWORK_SERVER_SERVER_HPP_

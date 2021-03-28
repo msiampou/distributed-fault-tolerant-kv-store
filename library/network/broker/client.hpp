@@ -1,10 +1,10 @@
-#ifndef _LIBRARY_SERVER_CLIENT_HPP_
-#define _LIBRARY_SERVER_CLIENT_HPP_
+#ifndef _LIBRARY_NETWORK_BROKER_CLIENT_HPP_
+#define _LIBRARY_NETWORK_BROKER_CLIENT_HPP_
 
 #include <iostream>
 #include <string>
 
-#include "../io/socket/socket.hpp"
+#include "../socket/socket.hpp"
 
 class client {
   public:
@@ -40,4 +40,4 @@ class client {
     std::vector<std::int32_t> new_connections;
 };
 
-#endif
+#endif // _LIBRARY_NETWORK_BROKER_CLIENT_HPP_
