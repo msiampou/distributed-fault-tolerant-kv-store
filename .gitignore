@@ -1,3 +1,4 @@
 .vscode
 server.c
 client.c
+./a.out
