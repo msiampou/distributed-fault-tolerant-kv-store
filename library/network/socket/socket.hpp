@@ -12,6 +12,8 @@
 #include <unistd.h> 
 #include <cstring>
 
+#include "../../io/command_handler/command_handler.hpp"
+
 namespace io {
 
 class socket {
@@ -28,7 +30,7 @@ class socket {
       assert(err >= 0);
 
       bzero(reinterpret_cast<char*>(&serv_addr), sizeof(serv_addr));
-      serv_addr.sin_family = AF_INET;   
+      serv_addr.sin_family = AF_INET;
       serv_addr.sin_addr.s_addr = INADDR_ANY;
       serv_addr.sin_port = htons(port);
     }
@@ -67,28 +69,34 @@ class socket {
       return ::connect(socket_fd, reinterpret_cast<struct sockaddr*>(&serv_addr), addrlen);
     }
 
-    std::int32_t read() {
-      char buffer[256];
-      bzero(buffer, 256);
-      auto msg_bytes = ::read(socket_fd, buffer, 255);
-      std:: cout << buffer << std::endl;
-      return msg_bytes;
+    //TODO: loop in read
+    std::string recv_result() {
+      char buffer[1024];
+      bzero(buffer, 1024);
+      auto msg_bytes = ::read(socket_fd, buffer, 1023);
+      std::string result(buffer);
+      return result;
     }
 
-    std::int32_t read(std::int32_t connection_fd) {
-      char buffer[256];
-      bzero(buffer, 256);
-      auto msg_bytes = ::read(connection_fd, buffer, 255);
-      std:: cout << buffer << std::endl;
-      return msg_bytes;
+    //TODO: loop in read
+    std::string recv_request(std::int32_t connection_fd) {
+      char buffer[1024];
+      bzero(buffer, 1024);
+      auto msg_bytes = ::read(connection_fd, buffer, 1023);
+      std::string key(buffer);
+      // std::cout << buffer << std::endl;
+      std::string result = io::handle_request(key);
+      return result;
     }
 
-    std::int32_t write(std::int32_t connection_fd, std::string message) {
-      return ::write(connection_fd, message.c_str(), strlen(message.c_str()));
+    //TODO: loop in write
+    void send_result(std::int32_t connection_fd, std::string message) {
+      auto msg_bytes = ::write(connection_fd, message.c_str(), strlen(message.c_str()));
     }
 
-    std::int32_t write(std::string message) {
-      return ::write(socket_fd, message.c_str(), strlen(message.c_str()));
+    //TODO: loop in write
+    void send_request(std::string message) {
+      auto msg_bytes = ::write(socket_fd, message.c_str(), strlen(message.c_str()));
     }
 
     ~socket() {

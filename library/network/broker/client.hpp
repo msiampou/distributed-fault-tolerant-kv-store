@@ -11,7 +11,6 @@ class client {
   template <typename Ports, typename IPs>
   explicit client(Ports& no_ports, IPs& addresses, std::int32_t max_clients) 
           : num_clients(max_clients), sockets(max_clients), new_connections(max_clients) {
-    
     for(std::int32_t i=0; i<num_clients; ++i) {
       sockets[i].create(no_ports[i], addresses[i]);
       new_connections[i] = sockets[i].connect();
@@ -20,18 +19,34 @@ class client {
 
   ~client() = default;
 
-  void run() {
+  template <typename Container>
+  bool send_data(Container& data) {
+    bool ok = true;
+    for(auto& key:data) {
+      for(std::int32_t i=0; i<num_clients; ++i) {     
+        sockets[i].send_request("PUT " + key);
+        auto result = sockets[i].recv_result();
+        std::cout << result << std::endl;
+      }
+    }
+    return ok;
+  }
+
+  bool run() {
+    bool ok = true;
     while(1) {
       std::string buffer;
       std::cin >> buffer;
       for(std::int32_t i=0; i<num_clients; ++i) {     
-        auto msg_bytes = sockets[i].write(buffer);
-        msg_bytes = sockets[i].read();
+        sockets[i].send_request(buffer);
+        auto result = sockets[i].recv_result();
+        std::cout << result << std::endl;
       }
-      if (buffer == "q") {
+      if (buffer == "e") {
         break;
       }
     }
+    return ok;
   }
 
   private:

@@ -20,18 +20,17 @@ class server {
     std::int32_t new_connection = socket.accept();
     assert(new_connection >= 0);
     while(1) {
-      auto msg_bytes = socket.read(new_connection);
-      msg_bytes = socket.write(new_connection, "I got your message");
-      if (msg_bytes == 1) {
+      auto result = socket.recv_request(new_connection);
+      if (result == "e") {
         break;
       }
+      socket.send_result(new_connection, result);
     }
     close(new_connection);
   }
   
   private:
     io::socket socket;
-
-}; // class server
+};
 
 #endif // _LIBRARY_NETWORK_SERVER_SERVER_HPP_

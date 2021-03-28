@@ -9,6 +9,8 @@ int main (void) {
   std::vector<std::string> addr{"localhost", "localhost"};
   client C(ports, addr, 2);
   auto container = io::file_parser("../../data/testfile.txt");
+  std::cout << container.size() << std::endl;
+  C.send_data(container);
   C.run();
 
   return 0;
