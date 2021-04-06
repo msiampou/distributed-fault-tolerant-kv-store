@@ -4,6 +4,7 @@
 #include <string>
 
 #include "../socket/socket.hpp"
+#include "../../structures/trie.hpp"
 
 class server {
   public:
@@ -17,10 +18,12 @@ class server {
   ~server() = default;
 
   void run() {
+    std::string root_val = "+";
+    trie<std::string> dict(root_val);
     std::int32_t new_connection = socket.accept();
     assert(new_connection >= 0);
     while(1) {
-      auto result = socket.recv_request(new_connection);
+      auto result = socket.recv_request(new_connection, dict);
       if (result == "e") {
         break;
       }

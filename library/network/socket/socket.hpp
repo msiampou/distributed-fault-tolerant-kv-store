@@ -13,6 +13,7 @@
 #include <cstring>
 
 #include "../../io/command_handler/command_handler.hpp"
+#include "../../structures/trie.hpp"
 
 namespace io {
 
@@ -79,13 +80,13 @@ class socket {
     }
 
     //TODO: loop in read
-    std::string recv_request(std::int32_t connection_fd) {
+    std::string recv_request(std::int32_t connection_fd, trie<std::string>& dict) {
       char buffer[1024];
       bzero(buffer, 1024);
       auto msg_bytes = ::read(connection_fd, buffer, 1023);
       std::string key(buffer);
       // std::cout << buffer << std::endl;
-      std::string result = io::handle_request(key);
+      std::string result = io::handle_request(key, dict);
       return result;
     }
 

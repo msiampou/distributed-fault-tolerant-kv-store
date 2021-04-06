@@ -36,13 +36,14 @@ class client {
     bool ok = true;
     while(1) {
       std::string buffer;
-      std::cin >> buffer;
+      std::getline(std::cin, buffer);
+      //std::cin >> buffer;
       for(std::int32_t i=0; i<num_clients; ++i) {     
         sockets[i].send_request(buffer);
         auto result = sockets[i].recv_result();
         std::cout << result << std::endl;
       }
-      if (buffer == "e") {
+      if (buffer == "E") {
         break;
       }
     }
