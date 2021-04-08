@@ -65,8 +65,13 @@ namespace io {
     keypath.erase(0, 6);
     if (keypath.find(".") != std::string::npos) {
       auto branch = io::split_keypath(keypath);
-      auto ret_val = dict.query(branch);
-      return (!ret_val.empty()) ? ret_val:"NOT FOUND";
+      auto key_list = dict.query(branch);
+      if (key_list.empty()) {
+        return "NOT FOUND";
+      } else {
+        return io::construct_keypath(key_list);
+      }
+      //return (!ret_val.empty()) ? ret_val:"NOT FOUND";
     } else {
       auto key_list = dict.query(keypath);
       if (key_list.empty()) {

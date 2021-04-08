@@ -25,6 +25,7 @@ class server {
     while(1) {
       auto result = socket.recv_request(new_connection, dict);
       if (result == "e") {
+        socket.send_result(new_connection, "Closing connection..");
         break;
       }
       socket.send_result(new_connection, result);

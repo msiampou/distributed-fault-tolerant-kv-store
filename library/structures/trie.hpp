@@ -2,7 +2,6 @@
 #define _LIBRARY_STRUCTURES_TRIE_HPP_
 
 #include <string>
-#include <iostream>
 #include <optional>
 #include <map>
 #include <vector>
@@ -48,7 +47,6 @@ class trie {
     template <typename V>
     bool insert(V& values) {
       trie_node<T>* curr = root;
-      trie_node<T>* start = root;
       for(auto& val:values) {
         // if value doesn't exist, we create a new node and add its pointer to
         // its parents map.
@@ -93,29 +91,26 @@ class trie {
 
     // Prints the value of any 'key', having its path. If the key does not
     // exist it returns false.
-    T query(std::vector<T>& key_path) {
+    std::vector<T> query(std::vector<T>& key_path) {
       // traverse the branch until end is reached
+      std::vector<T> v;
       auto curr = root->children;
       for(auto& key:key_path) {
         // if one of the keys in the path doesn't exist return false
         if(curr.find(key) == curr.end()) {
-          return {};
+          return v;
         }
         curr = curr[key]->children;
       }
-      typename Map::iterator it;
-      for (it=curr.begin(); it!=curr.end(); ++it) {
-        if (it->second->is_leaf) {
-          return it->first;
-        }
-      }
-      return {};
-    }
-
-    // Prints the whole trie.
-    void print() {
-      auto curr = root->children;
-      print(curr);
+      std::deque<T> dq;
+      v = get(curr, dq, v);
+      // typename Map::iterator it;
+      // for (it=curr.begin(); it!=curr.end(); ++it) {
+      //   if (it->second->is_leaf) {
+      //     return it->first;
+      //   }
+      // }
+      return v;
     }
 
     bool validity_check(std::vector<T>& key_path) {
@@ -154,21 +149,6 @@ class trie {
     }
   
   private:
-    // Private 'print' method that recursevly traverses the trie, to print the
-    // values of its nodes.
-    void print(Map& curr) {
-      if (curr.empty()) {
-        return;
-      }
-      // recursevly call the method for each child node of 'curr'
-      typename Map::iterator it;
-      for(it=curr.begin(); it!=curr.end(); ++it) {
-        std::cout << it->first << " ";
-        print(it->second->children);
-        std::cout << std::endl;
-      }
-    }
-
     std::vector<T> get(Map& curr, std::deque<T>& dq, std::vector<T>& v) {
       if (curr.empty()) {
         for(auto& item : dq) {
