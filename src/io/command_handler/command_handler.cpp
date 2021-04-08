@@ -44,7 +44,7 @@ namespace io {
       std::vector<std::string>::const_iterator first = path.begin();
       std::vector<std::string>::const_iterator last = path.end()-1;
       std::vector<std::string> dup(first, last);
-      if (dict.validity_check(dup)) {
+      if (dict.query(dup).empty()) {
         ok = ok && dict.insert(path);
       }
     }

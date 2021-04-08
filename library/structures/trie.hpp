@@ -120,7 +120,7 @@ class trie {
 
     bool validity_check(std::vector<T>& key_path) {
       auto curr = root->children;
-      return validity_check(curr);
+      return validity_check(curr, true);
     }
     
     // Deletes a top level 'key'. Returns true if the deletion was successful,
@@ -201,17 +201,16 @@ class trie {
       }
     }
 
-    bool validity_check(Map curr) {
+    bool validity_check(Map curr, bool ok) {
       if (curr.empty()) {
-        return true;
+        return ok;
       }
       typename Map::iterator it;
-      bool ok = true;
       for(it=curr.begin(); it!=curr.end(); ++it) {
         if (it->second->is_leaf) {
           return false;
         }
-        ok = ok && validity_check(it->second->children);
+        ok = ok && validity_check(it->second->children, ok);
       }
       return ok;
     }
