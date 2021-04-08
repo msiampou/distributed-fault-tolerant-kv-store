@@ -41,24 +41,39 @@ namespace io {
 
     bool ok = true;
     for(auto& path:keypaths) {
-      ok = ok && dict.insert(path);
+      std::vector<std::string>::const_iterator first = path.begin();
+      std::vector<std::string>::const_iterator last = path.end()-1;
+      std::vector<std::string> dup(first, last);
+      if (dict.query(dup).empty()) {
+        ok = ok && dict.insert(path);
+      }
     }
-    dict.print();
     return ok ? "ΟΚ":"ERROR";
   }
   
   std::string get_request(std::string key, trie<std::string>& dict) {
     key.erase(0, 4);
-    return dict.get(key);
+    auto key_list = dict.get(key);
+    if (key_list.empty()) {
+      return "NOT FOUND";
+    } else {
+      return io::construct_keypath(key_list);
+    }    
   }
 
   std::string query_request(std::string keypath, trie<std::string>& dict) {
     keypath.erase(0, 6);
     if (keypath.find(".") != std::string::npos) {
       auto branch = io::split_keypath(keypath);
-      return dict.query(branch);
+      auto ret_val = dict.query(branch);
+      return (!ret_val.empty()) ? ret_val:"NOT FOUND";
     } else {
-      return dict.query(keypath);
+      auto key_list = dict.query(keypath);
+      if (key_list.empty()) {
+        return "NOT FOUND";
+      } else {
+        return io::construct_keypath(key_list);
+      }
     } 
   }
 

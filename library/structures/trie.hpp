@@ -3,9 +3,18 @@
 
 #include <string>
 #include <iostream>
+#include <optional>
 #include <map>
 #include <vector>
-#include <deque>   
+#include <deque>
+
+template<class T>
+struct empty_item { 
+  typedef T type; 
+};
+
+template<class T>
+typename empty_item<T>::type item();
 
 /// 'trie_node' structure defines the nodes of the trie.
 template <typename T>
@@ -39,13 +48,17 @@ class trie {
     template <typename V>
     bool insert(V& values) {
       trie_node<T>* curr = root;
+      trie_node<T>* start = root;
       for(auto& val:values) {
-        trie_node<T>* node = curr->children[val];
         // if value doesn't exist, we create a new node and add its pointer to
-        // its parents map. 
-        if (!node) {
+        // its parents map.
+        trie_node<T>* node = nullptr;
+        typename Map::iterator it = curr->children.find(val);
+        if (it == curr->children.end()) {
           node = new trie_node<T>(val);
           curr->children[val] = node;
+        } else {
+          node = it->second;
         }
         // continue traversing the trie until a value is not found.
         curr = node;
@@ -56,37 +69,37 @@ class trie {
       return true;
     }
 
-    // Prints the value of the top-level key 'key'. If the key does not exist
+    // Returns the values of the top-level key 'key'. If the key does not exist
     // it in the top level layer, it returns false.
-    std::string get(T& key) {
+    std::vector<T> get(T& key) {
+      std::vector<T> v;
       auto curr = root->children;
       // if key doesn't exist return false
       if (curr.find(key) == curr.end()) {
-        return "ERROR";
+        return v;
       }
       // cals print function to traverse the trie branch
-      std::string ret_val;
-      std::deque<T> s;
-      s.push_back(key);
-      ret_val = get(curr[key]->children, s, ret_val);
+      std::deque<T> dq;
+      dq.push_back(key);
+      v = get(curr[key]->children, dq, v);
       // return success
-      return ret_val;
+      return v;
     }
 
     // Calls 'get' method for a specific key. See line 58 for more details. 
-    std::string query(T& val) {
+    std::vector<T> query(T& val) {
       return get(val);
     }
 
     // Prints the value of any 'key', having its path. If the key does not
     // exist it returns false.
-    std::string query(std::vector<T>& key_path) {
+    T query(std::vector<T>& key_path) {
       // traverse the branch until end is reached
       auto curr = root->children;
       for(auto& key:key_path) {
         // if one of the keys in the path doesn't exist return false
         if(curr.find(key) == curr.end()) {
-          return "NOT FOUND";
+          return {};
         }
         curr = curr[key]->children;
       }
@@ -96,13 +109,18 @@ class trie {
           return it->first;
         }
       }
-      return "NOT FOUND";
+      return {};
     }
 
     // Prints the whole trie.
     void print() {
       auto curr = root->children;
       print(curr);
+    }
+
+    bool validity_check(std::vector<T>& key_path) {
+      auto curr = root->children;
+      return validity_check(curr);
     }
     
     // Deletes a top level 'key'. Returns true if the deletion was successful,
@@ -151,23 +169,21 @@ class trie {
       }
     }
 
-    std::string get(Map& curr, std::deque<T>& s, std::string ret_val) {
+    std::vector<T> get(Map& curr, std::deque<T>& dq, std::vector<T>& v) {
       if (curr.empty()) {
-        for(auto& item : s) {
-          ret_val += " : ";
-          ret_val += item;
+        for(auto& item : dq) {
+          v.push_back(item);
         }
-        ret_val += "\n";
-        return ret_val;
+        v.push_back({});
       }
       // recursevly call the method for each child node of 'curr'
       typename Map::iterator it;
       for(it=curr.begin(); it!=curr.end(); ++it) {
-        s.push_back(it->first);
-        ret_val = get(it->second->children, s, ret_val);
-        s.pop_back();
+        dq.push_back(it->first);
+        v = get(it->second->children, dq, v);
+        dq.pop_back();
       }
-      return ret_val;
+      return v;
     }
 
     // Private 'del' method that recursevly traverses the trie, to delete the
@@ -183,6 +199,21 @@ class trie {
         delete it->second;
         it = curr.erase(it);
       }
+    }
+
+    bool validity_check(Map curr) {
+      if (curr.empty()) {
+        return true;
+      }
+      typename Map::iterator it;
+      bool ok = true;
+      for(it=curr.begin(); it!=curr.end(); ++it) {
+        if (it->second->is_leaf) {
+          return false;
+        }
+        ok = ok && validity_check(it->second->children);
+      }
+      return ok;
     }
 
   private:

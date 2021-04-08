@@ -92,6 +92,16 @@ namespace io {
     return vec;
   }
 
-
-
+  std::string construct_keypath(std::vector<std::string> key_list) {
+    std::string keypath = "";
+    for(auto& key:key_list) {
+      if (key.empty()) {
+        keypath += "\n";
+      } else {
+        keypath += key;
+        keypath += " ";
+      }
+    }
+    return keypath;
+  }
 } // namespace io
