@@ -7,14 +7,6 @@
 #include <vector>
 #include <deque>
 
-template<class T>
-struct empty_item { 
-  typedef T type; 
-};
-
-template<class T>
-typename empty_item<T>::type item();
-
 /// 'trie_node' structure defines the nodes of the trie.
 template <typename T>
 struct trie_node {
@@ -104,15 +96,10 @@ class trie {
       }
       std::deque<T> dq;
       v = get(curr, dq, v);
-      // typename Map::iterator it;
-      // for (it=curr.begin(); it!=curr.end(); ++it) {
-      //   if (it->second->is_leaf) {
-      //     return it->first;
-      //   }
-      // }
       return v;
     }
 
+    // Checks if entry is valid to insert.
     bool validity_check(std::vector<T>& key_path) {
       auto curr = root->children;
       return validity_check(curr, true);
@@ -149,6 +136,8 @@ class trie {
     }
   
   private:
+    // Private 'get' method that recursevly traverses the trie, to store the
+    // values of the nodes of a specific branch.
     std::vector<T> get(Map& curr, std::deque<T>& dq, std::vector<T>& v) {
       if (curr.empty()) {
         for(auto& item : dq) {
@@ -181,6 +170,8 @@ class trie {
       }
     }
 
+    // Private 'validity_check' method that recursevly traverses the trie, to
+    // check if an entry is already inserted.
     bool validity_check(Map curr, bool ok) {
       if (curr.empty()) {
         return ok;

@@ -9,6 +9,7 @@
 #include "../../../library/io/io.hpp"
 
 namespace io {
+  /// Parses the data file.
   std::vector<std::string> file_parser(std::string filename) {
     std::vector<std::string> container;
     std::ifstream f(filename);
@@ -21,6 +22,22 @@ namespace io {
     return container;
   }
 
+  /// Parses the server file. File contains servers' ports and addresses.
+  void file_parser(std::vector<std::uint32_t>& ports,
+                  std::vector<std::string>& addresses, std::string filename) {
+    std::ifstream f(filename);
+    assert(f.is_open() && "Couln't open file");
+    std::string line;
+    while (getline(f,line)) {
+      auto first_token = line.substr(0, line.find(' '));
+      auto second_token = line.substr(line.find(' ')+1, line.length());
+      addresses.push_back(first_token);
+      ports.push_back(static_cast<uint32_t>(std::stoul(second_token)));
+    }
+    f.close();
+  }
+
+  /// Parses json input and stores values in a queue of strings.
   std::queue<std::string> extract_keys(std::string json) {
     std::string const delims {" :;{}"};
     std::queue<std::string> q;
@@ -32,6 +49,7 @@ namespace io {
     return q;
   }
 
+  /// Manipulates json input in order to latter parse it.
   std::string json_manipulation(std::string json) {
     json += ';';
     size_t index = 0;
@@ -49,7 +67,10 @@ namespace io {
     return json;
   }
 
-  std::vector<std::vector<std::string>> json_parser(std::string json, std::queue<std::string>& q) {
+  /// Parses json input and constructs key-value keypaths to latter insert them
+  /// into trie.
+  std::vector<std::vector<std::string>> json_parser(std::string json,
+                                                  std::queue<std::string>& q) {
     std::vector<std::vector<std::string>> keypaths;
     std::stack<std::string> s;
     int lvl = 0;
@@ -58,16 +79,20 @@ namespace io {
         std::string val = q.front();
         q.pop();
         s.push(val);
+        // entering a deeper level of nesting
       } else if (c == '{') {
         lvl +=1;
+        // exiting a level of nesting
       } else if (c == '}') {
         lvl-=1;
+        // read a value
       } else if (c == ';') {
         std::string val = q.front();
         q.pop();
         s.push(val);
         std::stack<std::string> temp = s;
         std::vector<std::string> v;
+        // construct a path for each high level key
         while(!temp.empty()) {
           v.insert(v.begin(), temp.top());
           temp.pop();
@@ -81,6 +106,7 @@ namespace io {
     return keypaths;
   }
 
+  /// Used by Query command to split keypath to a vector of strings.
   std::vector<std::string> split_keypath(std::string keypath) {
     std::string const delims {"."};
     std::vector<std::string> vec;
@@ -92,6 +118,8 @@ namespace io {
     return vec;
   }
 
+  /// Used by GET / Query command to construct string keypath from a vector of
+  /// strings.
   std::string construct_keypath(std::vector<std::string> key_list) {
     std::string keypath = "";
     for(auto& key:key_list) {

@@ -8,10 +8,9 @@
 #include "../../../library/structures/trie.hpp"
 
 namespace io {
-
-  // TODO: switch case with string
+  /// Handles requests, depending on the first letter of the command. Throws
+  /// an error in case of unknown command.
   std::string handle_request(std::string key, trie<std::string>& dict) {
-    std::cout << key << std::endl;
     switch(key[0]) {
       case 'P' :
         return put_request(key, dict);
@@ -29,10 +28,11 @@ namespace io {
         return "e";
         break;
       default :
-        throw "Unknown command";
+        return "Unknown command" ;
     }
   }
   
+  /// Implementation of PUT request. Inserts data into trie.
   std::string put_request(std::string key, trie<std::string>& dict) {
     key.erase(0, 4);
     std::string json_str = io::json_manipulation(key);
@@ -50,38 +50,28 @@ namespace io {
     }
     return ok ? "ΟΚ":"ERROR";
   }
-  
+
+  /// Implementation of GET request. Returns the values of a high level key.  
   std::string get_request(std::string key, trie<std::string>& dict) {
     key.erase(0, 4);
     auto key_list = dict.get(key);
-    if (key_list.empty()) {
-      return "NOT FOUND";
-    } else {
-      return io::construct_keypath(key_list);
-    }    
+    return key_list.empty() ? "NOT FOUND":io::construct_keypath(key_list);    
   }
 
+  /// Implementation of QUERY request. Returns the values of a specific key.
   std::string query_request(std::string keypath, trie<std::string>& dict) {
     keypath.erase(0, 6);
+    std::vector<std::string> key_list;
     if (keypath.find(".") != std::string::npos) {
       auto branch = io::split_keypath(keypath);
-      auto key_list = dict.query(branch);
-      if (key_list.empty()) {
-        return "NOT FOUND";
-      } else {
-        return io::construct_keypath(key_list);
-      }
-      //return (!ret_val.empty()) ? ret_val:"NOT FOUND";
+      key_list = dict.query(branch);
     } else {
-      auto key_list = dict.query(keypath);
-      if (key_list.empty()) {
-        return "NOT FOUND";
-      } else {
-        return io::construct_keypath(key_list);
-      }
-    } 
+      key_list = dict.query(keypath);
+    }
+    return key_list.empty() ? "NOT FOUND":io::construct_keypath(key_list); 
   }
 
+  /// Implementation of DELETE request. Deletes a high level key.
   std::string delete_request(std::string key, trie<std::string>& dict) {
     key.erase(0, 7);
     bool ok = dict.del(key);

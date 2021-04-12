@@ -1,0 +1,2 @@
+localhost 8082
+localhost 8888
