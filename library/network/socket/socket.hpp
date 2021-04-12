@@ -107,16 +107,18 @@ class socket {
       // splits received data into chunks of 1023 bytes
       while(1) {
         char buffer[1024];
-        bzero(buffer, 1024);
+        bzero(buffer, 1023);
         msg_bytes = ::read(connection_fd, buffer, 1023);
+        std::cout << buffer << std::endl;
         std::string buf(buffer);
         key += std::string(buf);
         // continue reading until bytes read are less than chunk size
-        if (msg_bytes < 1023) {
+        if (msg_bytes < 1023 || buffer[msg_bytes-1] == '$') {
           break;
         }
       }
       // handles request
+      key.pop_back();
       std::string result = io::handle_request(key, dict);
       return result;
     }
@@ -129,8 +131,10 @@ class socket {
 
     /// Writes results to socket.
     /// This method is called by broker to requests to server.
-    void send_request(std::string message) {
-      auto msg_bytes = ::write(socket_fd, message.c_str(), strlen(message.c_str()));
+    bool send_request(std::string message) {
+      message += "$";  
+      auto msg_bytes = ::send(socket_fd, message.c_str(), strlen(message.c_str()), MSG_NOSIGNAL);
+      return (msg_bytes <= 0) ? false:true;
     }
 
     /// 'socket' destructor.

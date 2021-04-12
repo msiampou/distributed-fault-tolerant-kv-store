@@ -192,6 +192,4 @@ class trie {
     trie_node<T>* root;
 };
 
-
-
 #endif // _LIBRARY_STRUCTURES_TRIE_HPP_

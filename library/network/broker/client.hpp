@@ -34,17 +34,27 @@ class client {
     template <typename Container>
     bool send_data(Container& data, std::int32_t k) {
       bool ok = true;
+      std::int32_t total_active = 0;
       for(auto& key:data) {
         // send each data to k random servers
         for(std::int32_t srv=0; srv<k; ++srv) {
           std::uint32_t srv_idx = rand()%num_servers;
           // send put request to 'srv_idx' server
-          sockets[srv_idx].send_request("PUT " + key);
+          bool active = sockets[srv_idx].send_request("PUT " + key);
+          total_active += (active) ? 1:(-1);
           // receive results from 'srv_idx' server
           auto result = sockets[srv_idx].recv_result();
-          std::cout << result << std::endl;
           // check if all data were inserted successfullly
-          ok = ok && (result == "OK") ? true:false; 
+          if (active) {
+            std::cout << "SERVER " << srv_idx << ": " << result << std::endl;
+          } else {
+            std::cout << "SERVER " << srv_idx << ": NOT RESPONDED" << std::endl;
+          }
+          ok = ok && (result != "ERROR") ? true:false;
+        }
+        if (total_active < k) {
+          std::cout << "WARNING MORE THAN K SERVERS SEEM TO BE DOWN.." << std::endl;
+          ok = ok && false;
         }
       }
       return ok;
@@ -61,7 +71,7 @@ class client {
         for(std::uint32_t i=0; i<num_servers; ++i) {
           sockets[i].send_request(buffer);
           auto result = sockets[i].recv_result();
-          std::cout << "Received from " << i << " server:" << std::endl << std::endl;
+          std::cout << "Received from " << "server:" <<  i << std::endl << std::endl;
           std::cout << result << std::endl << std::endl;
         }
         // user wants to terminate the proccess.

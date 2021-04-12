@@ -5,7 +5,6 @@
 #include "../../library/io/io.hpp"
 
 int main (int argc, char* argv[]) {
-
   /// Check the number of the input parameters.
   if (argc < 7) {
     std::cerr << "Usage: " << argv[0] << "-s serverFile.txt -i datatToIndex.txt -k dublicationFactor" << std::endl;
@@ -40,9 +39,14 @@ int main (int argc, char* argv[]) {
   auto container = io::file_parser(data_file);
   io::file_parser(ports, addr, server_file);
   /// Run broker.
-  client C(ports, addr, k);
-  std::cout << container.size() << std::endl;
-  C.send_data(container,2);
+  client C(ports, addr, ports.size());
+  std::cout << ports.size() << std::endl;
+  bool ok = C.send_data(container, k);
+  if (ok) {
+    std::cout << "Data sent successfully" << std::endl;
+  } else {
+    std::cout << "Less than " << k << " servers responded.. \n Cannot guarantee the correctness of the next commands \n" << std::endl;
+  }
   C.run();
 
   return 0;
