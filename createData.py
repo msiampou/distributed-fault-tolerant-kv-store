@@ -65,7 +65,7 @@ def generate_dataset(fields, numlines, maxlevel, maxlength, maxkeys):
       print()
 
 def create_outfile(fields, numlines, maxlevel, maxlength, maxkeys):
-   with open('testfile.txt', 'w') as f:
+   with open('dataToIndex.txt', 'w') as f:
       sys.stdout = f
       generate_dataset(fields, numlines, maxlevel, maxlength, maxkeys)
 

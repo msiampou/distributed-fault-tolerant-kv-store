@@ -29,6 +29,7 @@ person21: { key0: 2619; key1: {}; key2: { postalcode : teen; postalcode : {} } }
 ```
 
 In this case we have generated to different values for the same key. This case is latter handled by the KVStore.
+Last but not least, the keys generated do not contain " ".
 
 ##### Excecution examples
 
@@ -151,8 +152,11 @@ The implementation of the Trie is fully templated and can be used to store both 
 ##### Notes
 - The execution of the program has been tested with maximum 3 servers and 1 client.
 - It is assumed that the length of each entry will not exceed the maximum socket size.
+- Connections are continues, meaning that if a server disconects, it cannot reconnect.
+- When k or more servers are down, the program continues the exececution, but it prints a warning.
 - Since a validation check is performed for each one of the entries, that may slow down things a bit for deep nesting.
-- This program has been developed in Manjaro Linux enviroment. 
+- You can execute each command by writting either everything on camel case or only the first letter. For example: `GET person1000 && Get person1000` are both acceptable.
+- This program has been developed in Manjaro Linux enviroment.
 
 ##### Author
 Siampou Maria Despoina

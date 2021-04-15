@@ -47,7 +47,7 @@ int main (int argc, char* argv[]) {
   } else {
     std::cout << "Less than " << k << " servers responded.. \n Cannot guarantee the correctness of the next commands \n" << std::endl;
   }
-  C.run();
+  C.run(k);
 
   return 0;
 }

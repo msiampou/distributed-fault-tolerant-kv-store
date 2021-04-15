@@ -61,18 +61,28 @@ class client {
     }
 
     /// Broker runs until it receives 'E' from the user.
-    bool run() {
+    bool run(std::int32_t k) {
       bool ok = true;
       while(1) {
         std::string buffer;
         // get command from user
         std::getline(std::cin, buffer);
         // send command to all connected servers
+        std::int32_t total_active = num_servers;
         for(std::uint32_t i=0; i<num_servers; ++i) {
           sockets[i].send_request(buffer);
           auto result = sockets[i].recv_result();
-          std::cout << "Received from " << "server:" <<  i << std::endl << std::endl;
-          std::cout << result << std::endl << std::endl;
+          if (result.empty()) {
+            std::cout << "Received from server " << i << ": NO RESPONCE" << std::endl << std::endl;
+            --total_active;
+          } else {
+            std::cout << "Received from " << "server" <<  i << ":" << std::endl;
+            std::cout << result << std::endl << std::endl;
+          }
+        }
+        if (total_active < k) {
+          std::cout << "WARNING MORE THAN K SERVERS SEEM TO BE DOWN.." << std::endl;
+          std::cout << "Cannot guarantee the correctness of the results \n" << std::endl;
         }
         // user wants to terminate the proccess.
         if (buffer == "E") {
