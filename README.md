@@ -16,11 +16,8 @@ python3 createData.py -k keyFile.txt -n 10000 -d 3 -l 4 -m 3
 ##### Arguments
 
 `[-n]`​ indicates the number of lines (i.e. separate data) that we would like to generate.
-
 `[-d]` ​is the maximum level of nesting. The value of `[d]` should be >= 0, otherwise a ValueError is raised.
-
 `[-l]` ​is the maximum length of a string value. In case of an integer, float or double type, I assumed that this refers to the number of digits. The value of `[l]` should be > 0, otherwise a ValueError is raised.
-
 `[-m​]` is the maximum number of keys inside each value. The value of `[m]` should be >= 0, to create at least 1 key-value pair.
 
 ##### Implementation Details
