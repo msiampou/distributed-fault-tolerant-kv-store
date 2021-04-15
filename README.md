@@ -70,7 +70,7 @@ In order for the excecution to be successful, the *servers* should be launched f
 `[-p]`: Port number
 `[-s]`: serversFile that contains the IPs and ports of each server.
 `[-i]`: The data file that has been generated using the createData script.
-`[-k]`: Replication factor indicates how many servers will index the same data.
+`[-k]`: Replication factor indicates how many servers will index the same data. k must be less or equal to the number of servers in the serverfile.
 
 ##### Implementation Details
 

@@ -4,5 +4,5 @@ client.c
 ./a.out
 library/structures/trie.cpp
 library/structures/a.out
-test/broker/a.out
-test/server/a.out
+test/broker/kvBroker
+test/server/kvServer

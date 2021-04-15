@@ -40,7 +40,10 @@ int main (int argc, char* argv[]) {
   io::file_parser(ports, addr, server_file);
   /// Run broker.
   client C(ports, addr, ports.size());
-  std::cout << ports.size() << std::endl;
+  if (k > ports.size()) {
+    std::cerr << "k must be less than number of servers" << std::endl;
+    return 1;
+  }
   bool ok = C.send_data(container, k);
   if (ok) {
     std::cout << "Data sent successfully" << std::endl;
