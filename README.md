@@ -151,7 +151,12 @@ The implementation of the Trie is fully templated and can be used to store both 
     - server: Contains the main function that executes kvServer.
 ```
 
-##### Author
+##### Notes
+- The execution of the program has been tested with maximum 3 servers and 1 client.
+- It is assumed that the length of each entry will not exceed the maximum socket size.
+- Since a validation check is performed for each one of the entries, that may slow down things a bit for deep nesting.
+- This program has been developed in Manjaro Linux enviroment. 
 
+##### Author
 Siampou Maria Despoina
 cs2200017@di.uoa.gr
