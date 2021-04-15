@@ -76,6 +76,7 @@ namespace io {
     int lvl = 0;
     for (char const& c: json) {
       if (c == ':') {
+        assert(!q.empty() && "Json has wrong format. Couldn't parse");
         std::string val = q.front();
         q.pop();
         s.push(val);
@@ -87,6 +88,7 @@ namespace io {
         lvl-=1;
         // read a value
       } else if (c == ';') {
+        assert(!q.empty() && "Json has wrong format. Couldn't parse");
         std::string val = q.front();
         q.pop();
         s.push(val);
