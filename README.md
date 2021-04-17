@@ -1,4 +1,4 @@
-# Efficient-KV-Store
+# Distributed-Fault-Tolerant-KV-Store
 
 ## M111: Big Data Management
 
