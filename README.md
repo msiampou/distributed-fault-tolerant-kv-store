@@ -1,7 +1,5 @@
 # Distributed-Fault-Tolerant-KV-Store
 
-## M111: Big Data Management
-
 ### Data Creation
 
 ##### Language
